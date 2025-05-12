@@ -260,7 +260,7 @@ func addImportPackages(importPackages []string, name string) []string {
 }
 
 func packageAlreadyIn(importPackages []string, name string) bool {
-	for i := 0; i < len(importPackages); i++ {
+	for i := range importPackages {
 		if name == importPackages[i] {
 			return true
 		}

@@ -55,7 +55,8 @@ lint: $(VENDOR)
 	mkdir ./tmp 2>/dev/null || true
 	$(GOLINT) run \
 		--issues-exit-code=0 \
-		--out-format=checkstyle \
+		--output.checkstyle.path=stdout \
+		--show-stats=false \
 		./... \
 		| \
 		tee ./tmp/lintreport.xml
