@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/urfave/cli/v3"
@@ -9,6 +10,11 @@ import (
 
 func action(c context.Context, cmd *cli.Command) error {
 	output := cmd.String("output")
+
+	_, err := getTemplates()
+	if err != nil {
+		return fmt.Errorf("failed to initialize templates: %w", err)
+	}
 
 	pkg, err := loadPackage()
 	if err != nil {

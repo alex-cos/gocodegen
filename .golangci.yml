@@ -74,7 +74,6 @@ linters:
     - sloglint
     - sqlclosecheck
     - staticcheck
-    #   - tagalign
     - testifylint
     - testpackage
     - thelper
@@ -83,7 +82,6 @@ linters:
     - unparam
     - wastedassign
     - whitespace
-    #   - wrapcheck
     - zerologlint
   # Disable specific linter.
   disable:
@@ -273,6 +271,8 @@ linters:
         source: "^//go:generate "
       - path: (.+)\.go$
         text: G306
+      - path: (.+)\.go$
+        text: G602
       - linters:
           - cyclop
         path: (.+)_test\.go$

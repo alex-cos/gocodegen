@@ -8,7 +8,6 @@ import (
 	"slices"
 	"sort"
 	"strings"
-	"text/template"
 	"time"
 
 	"golang.org/x/text/cases"
@@ -169,11 +168,8 @@ func generateStruct(writer io.Writer, structType *StructType) error {
 func generateHeader(writer io.Writer, name string) error {
 	var buff bytes.Buffer
 
-	header, err := template.New("header").Parse(headerTemplate)
-	if err != nil {
-		return fmt.Errorf("failed to parse header template: %w", err)
-	}
-	err = header.Execute(&buff, struct {
+	tpls, _ := getTemplates()
+	err := tpls.Header.Execute(&buff, struct {
 		Version  string
 		DateTime string
 		TypeName string
@@ -288,11 +284,8 @@ func generateBuilder(writer io.Writer, mStruct *StructType) error {
 		body += "\t"
 	}
 	body += "}"
-	builder, err := template.New("builder").Parse(builderTemplate)
-	if err != nil {
-		return fmt.Errorf("failed to parse builder template: %w", err)
-	}
-	err = builder.Execute(&buff, struct {
+	tpls, _ := getTemplates()
+	err := tpls.Builder.Execute(&buff, struct {
 		FuncName string
 		Params   string
 		TypeName string
@@ -321,11 +314,8 @@ func generateEnumStringer(writer io.Writer, enum *Enum) error {
 	if len(enum.Constants) == 0 {
 		return fmt.Errorf("empty enumeration constants for type '%s'", enum.Name)
 	}
-	stringer, err := template.New("enumstringer").Parse(enumStringerTemplate)
-	if err != nil {
-		return fmt.Errorf("failed to parse enumstringer template: %w", err)
-	}
-	err = stringer.Execute(&buff, struct {
+	tpls, _ := getTemplates()
+	err := tpls.EnumStringer.Execute(&buff, struct {
 		TypeName  string
 		Constants []string
 		Default   string
@@ -347,14 +337,11 @@ func generateEnumJSON(writer io.Writer, enum *Enum) error {
 	if !enum.JSON {
 		return nil
 	}
-	stringer, err := template.New("enumjson").Parse(enumJSONTemplate)
-	if err != nil {
-		return fmt.Errorf("failed to parse enumjson template: %w", err)
-	}
+	tpls, _ := getTemplates()
 	if len(enum.Constants) == 0 {
 		return fmt.Errorf("empty enumeration constants for type '%s'", enum.Name)
 	}
-	err = stringer.Execute(&buff, struct {
+	err := tpls.EnumJSON.Execute(&buff, struct {
 		TypeName string
 	}{
 		TypeName: enum.Name,
@@ -392,11 +379,8 @@ func generateStructStringer(writer io.Writer, mStruct *StructType) error {
 		strings.Join(formats, ","),
 		strings.Join(fields, ",\n\t\t"),
 	)
-	stringer, err := template.New("stringer").Parse(structStringerTemplate)
-	if err != nil {
-		return fmt.Errorf("failed to parse stringer template: %w", err)
-	}
-	err = stringer.Execute(&buff, struct {
+	tpls, _ := getTemplates()
+	err := tpls.StructStringer.Execute(&buff, struct {
 		TypeName string
 		Body     string
 	}{
@@ -428,11 +412,8 @@ func generateEqual(writer io.Writer, mStruct *StructType) error {
 		}
 	}
 	body := "return " + strings.Join(assertions, " &&\n\t\t")
-	equal, err := template.New("equal").Parse(equalTemplate)
-	if err != nil {
-		return fmt.Errorf("failed to parse equal template: %w", err)
-	}
-	err = equal.Execute(&buff, struct {
+	tpls, _ := getTemplates()
+	err := tpls.Equal.Execute(&buff, struct {
 		TypeName string
 		Body     string
 	}{
@@ -449,19 +430,12 @@ func generateGetterSetter(writer io.Writer, mStruct *StructType) error {
 	var buff bytes.Buffer
 
 	caser := cases.Title(language.Und, cases.NoLower)
-	getter, err := template.New("getter").Parse(getterTemplate)
-	if err != nil {
-		return fmt.Errorf("failed to parse getter template: %w", err)
-	}
-	setter, err := template.New("setter").Parse(setterTemplate)
-	if err != nil {
-		return fmt.Errorf("failed to parse setter template: %w", err)
-	}
+	tpls, _ := getTemplates()
 	for _, field := range mStruct.Fields {
 		fieldType := field.Type
 		if field.Setter {
 			buff.Reset()
-			err = setter.Execute(&buff, struct {
+			err := tpls.Setter.Execute(&buff, struct {
 				TypeName  string
 				FuncName  string
 				FieldName string
@@ -475,14 +449,14 @@ func generateGetterSetter(writer io.Writer, mStruct *StructType) error {
 			if err != nil {
 				return fmt.Errorf("failed to execute setter template: %w", err)
 			}
-			err := writeBuffer(writer, &buff)
+			err = writeBuffer(writer, &buff)
 			if err != nil {
 				return err
 			}
 		}
 		if field.Getter {
 			buff.Reset()
-			err = getter.Execute(&buff, struct {
+			err := tpls.Getter.Execute(&buff, struct {
 				TypeName  string
 				FuncName  string
 				FieldName string
@@ -496,7 +470,7 @@ func generateGetterSetter(writer io.Writer, mStruct *StructType) error {
 			if err != nil {
 				return fmt.Errorf("failed to execute getter template: %w", err)
 			}
-			err := writeBuffer(writer, &buff)
+			err = writeBuffer(writer, &buff)
 			if err != nil {
 				return err
 			}
@@ -533,11 +507,8 @@ func generateStructJSON(writer io.Writer, mStruct *StructType) error {
 			}
 		}
 	}
-	structJSON, err := template.New("structJSON").Parse(structJSONTemplate)
-	if err != nil {
-		return fmt.Errorf("failed to parse structJSON template: %w", err)
-	}
-	err = structJSON.Execute(&buff, struct {
+	tpls, _ := getTemplates()
+	err := tpls.StructJSON.Execute(&buff, struct {
 		TypeName    string
 		MarshalJSON map[string]GenJSON
 	}{

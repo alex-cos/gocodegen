@@ -11,6 +11,10 @@ import (
 func TestParsePackage(t *testing.T) {
 	t.Parallel()
 
+	tpls, err := initTemplates()
+	assert.NoError(t, err)
+	templates = tpls
+
 	pkg, err := loadPackage()
 	assert.NoError(t, err)
 

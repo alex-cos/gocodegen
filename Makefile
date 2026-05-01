@@ -40,7 +40,7 @@ install-tools:
 	$(GO) install github.com/go-critic/go-critic/cmd/gocritic@latest
 	$(GO) install golang.org/x/tools/cmd/deadcode@latest
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
-		sh -s -- -b $(go env GOPATH)/bin v1.60.1
+		sh -s -- -b $(go env GOPATH)/bin v2.12.0
 
 $(VENDOR):
 	$(GO) mod vendor
