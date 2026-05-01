@@ -1,13 +1,14 @@
 package main
 
 import (
+	"context"
 	"os"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
-func action(c *cli.Context) error {
-	output := c.String("output")
+func action(c context.Context, cmd *cli.Command) error {
+	output := cmd.String("output")
 
 	pkg, err := loadPackage()
 	if err != nil {
