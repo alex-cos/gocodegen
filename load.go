@@ -6,7 +6,7 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-func loadPackage() *packages.Package {
+func loadPackage() (*packages.Package, error) {
 	cfg := &packages.Config{
 		Mode: packages.NeedName |
 			packages.NeedFiles |
@@ -19,11 +19,12 @@ func loadPackage() *packages.Package {
 	}
 	pkgs, err := packages.Load(cfg)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	if len(pkgs) != 1 {
-		panic(fmt.Errorf("unexpected number of packages '%d'", len(pkgs)))
+		err := fmt.Errorf("unexpected number of packages '%d'", len(pkgs))
+		return nil, err
 	}
-	return pkgs[0]
+	return pkgs[0], nil
 }

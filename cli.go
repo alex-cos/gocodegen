@@ -18,12 +18,12 @@ func parseCLI() error {
 	cliapp.Version = version
 
 	cliapp.CommandNotFound = func(c *cli.Context, command string) {
-		fmt.Printf("Error. Unknown command: '%s'\n\n", command)
+		fmt.Fprintf(os.Stderr, "Error. Unknown command: '%s'\n\n", command)
 		cli.ShowAppHelpAndExit(c, 1)
 	}
 
 	cli.VersionPrinter = func(c *cli.Context) {
-		fmt.Println("Version:\t", c.App.Version)
+		fmt.Fprintln(os.Stdout, "Version:\t", c.App.Version)
 	}
 
 	cliapp.Flags = []cli.Flag{
