@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"maps"
+	"slices"
 	"sort"
 	"strings"
 	"text/template"
@@ -33,9 +35,7 @@ func generateSingle(output string, pack *Package) ([]Generated, error) {
 	for _, f := range pack.Files {
 		structs = append(structs, f.StructTypes...)
 		enums = append(enums, f.Enums...)
-		for alias, path := range f.Imports {
-			imports[alias] = path
-		}
+		maps.Copy(imports, f.Imports)
 	}
 	err := generateCommon(gen.Buf, pack, imports, structs, enums)
 	if err != nil {
@@ -260,12 +260,7 @@ func addImportPackages(importPackages []string, name string) []string {
 }
 
 func packageAlreadyIn(importPackages []string, name string) bool {
-	for i := range importPackages {
-		if name == importPackages[i] {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(importPackages, name)
 }
 
 func generateBuilder(writer io.Writer, mStruct *StructType) error {
