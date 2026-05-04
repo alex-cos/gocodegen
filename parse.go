@@ -304,13 +304,13 @@ func parseType(expr ast.Expr) string {
 	case *ast.SelectorExpr:
 		return fmt.Sprintf("%s.%s", parseType(tt.X), parseType(tt.Sel))
 	case *ast.StarExpr:
-		return fmt.Sprintf("*%s", parseType(tt.X))
+		return "*" + parseType(tt.X)
 	case *ast.ArrayType:
-		return fmt.Sprintf("[]%s", parseType(tt.Elt))
+		return "[]" + parseType(tt.Elt)
 	case *ast.MapType:
 		return fmt.Sprintf("map[%s]%s", parseType(tt.Key), parseType(tt.Value))
 	case *ast.ChanType:
-		return fmt.Sprintf("chan %s", parseType(tt.Value))
+		return "chan " + parseType(tt.Value)
 	case *ast.FuncType:
 		return parseFuncType(tt)
 	case *ast.InterfaceType:

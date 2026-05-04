@@ -1,5 +1,11 @@
 # gocodegen
 
+[![Go Version](https://img.shields.io/badge/Go-1.25%2B-blue)](https://go.dev/)
+[![Test Status](https://github.com/alex-cos/gocodegen/actions/workflows/test.yml/badge.svg)](https://github.com/alex-cos/gocodegen/actions/workflows/test.yml)
+[![Lint Status](https://github.com/alex-cos/gocodegen/actions/workflows/lint.yml/badge.svg)](https://github.com/alex-cos/gocodegen/actions/workflows/lint.yml)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/github.com/alex-cos/gocodegen)](https://goreportcard.com/report/github.com/alex-cos/gocodegen)
+
 gocodegen is a command-line tool that generates Go code by analyzing special comments in Go source files. It helps reduce boilerplate code by automatically generating getters, setters, constructors, stringers, equality methods, and JSON marshalers based on struct and enum definitions.
 
 ## Features
